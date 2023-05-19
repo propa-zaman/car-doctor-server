@@ -57,7 +57,7 @@ async function run() {
 
     // bookings
 
-    // some data read(email diye)
+    // some data read(email diye)*******important
     app.get('/bookings', async (req, res) => {
         console.log(req.query.email);
         let query = {};
@@ -68,13 +68,37 @@ async function run() {
         res.send(result);
     })
 
-    // (WRITE)data client side theke server side/database e jacche
+    // (CREATE)data client side theke server side/database e jacche
     app.post('/bookings', async (req, res) => {
         const booking = req.body;
         console.log(booking);
         const result = await bookingCollection.insertOne(booking);
         res.send(result);
     });
+
+    // update
+    app.patch('/bookings/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const updatedBooking = req.body;
+        console.log(updatedBooking);
+        const updateDoc = {
+            $set: {
+                status: updatedBooking.status
+            },
+        };
+        const result = await bookingCollection.updateOne(filter, updateDoc);
+        res.send(result);
+    })
+
+    app.delete('/bookings/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await bookingCollection.deleteOne(query);
+        res.send(result);
+    })
+
+
 
 
 
